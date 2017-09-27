@@ -1,0 +1,2 @@
+Defaults    env_file = /etc/ruby.env
+Defaults    secure_path = /sbin:/bin:/usr/sbin:/usr/bin:/opt/rubies/ruby-2.0.0-p648/bin

@@ -1,0 +1,32 @@
+---
+- include: "{{ansible_os_family}}.yml"
+
+# process ruby-install install
+- include: ruby_install.yml
+
+# process ruby install
+- include: ruby.yml
+
+# prep sudo environment to allow ruby - default 2.0.0-p648
+# make change necessary to ruby.env and ruby.sudo files
+# for other version
+
+- name: check to see if ruby sudo file is available
+  stat: path=/etc/sudoers.d/ruby
+  register: ruby_sudo
+  become: yes
+
+- name: check to see if ruby env file is available
+  stat: path=/etc/ruby.env
+  register: ruby_env
+  become: yes
+
+- name: copy ruby.sudo from local to remote
+  copy: src=ruby.sudo dest=/etc/sudoers.d/ruby
+  when: ruby_sudo.stat.exists == False
+  become: yes
+
+- name: copy ruby.env from local to remote
+  copy: src=ruby.env dest=/etc/ruby.env
+  when: ruby_env.stat.exists == False
+  become: yes

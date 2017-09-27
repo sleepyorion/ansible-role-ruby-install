@@ -1,0 +1,50 @@
+- name: set fact for ruby-install
+  set_fact:
+    ruby_install_name: ruby-install-{{ ruby_install_version }}
+    ruby_install_tmp_path: /tmp/ruby-install/ruby-install-{{ ruby_install_version }}.tar.gz
+
+- name: check if ruby-install is already installed
+  stat: path=/usr/local/share/doc/ruby-install-{{ ruby_install_version }}
+  register: ruby_install_installed
+
+- name: check to see if local file is available
+  local_action: stat path={{ binary_path }}/{{ ruby_install_name }}.tar.gz follow=true
+  register: ruby_install_file_local
+  become: no
+
+- name: check to see if remote file is available
+  stat: path={{ ruby_install_tmp_path }}
+  register: ruby_install_file_remote
+  when: ruby_install_installed.stat.exists == False
+
+- name: create ruby-install temp dir
+  file: path=/tmp/ruby-install state=directory
+  when: (ruby_install_installed.stat.exists == False) and (ruby_install_file_remote.stat.exists == False)
+
+- name: get file remotely since no copy of ruby-install is found on local or remote
+  local_action: get_url url="{{ url_prefix }}v{{ ruby_install_version }}.tar.gz" dest="{{ binary_path }}/{{ ruby_install_name }}.tar.gz"
+  become: no
+  when: (ruby_install_file_local.stat.exists == False) 
+
+- name: copy file from local to remote if exists
+  copy: src="{{ ruby_install_name }}.tar.gz" dest="/tmp/ruby-install/{{ ruby_install_name }}.tar.gz"
+  when: (ruby_install_installed.stat.exists == False) and (ruby_install_file_remote.stat.exists == False)
+
+- name: extract ruby-install package
+  unarchive:
+    src: "{{ ruby_install_tmp_path }}"
+    dest: /tmp/ruby-install
+    creates: "/tmp/ruby-install/{{ ruby_install_name }}/Makefile"
+    remote_src: yes
+  when: ruby_install_installed.stat.exists == false
+
+- name: install ruby-install
+  command: make install
+  args:
+    chdir: "/tmp/ruby-install/{{ ruby_install_name }}"
+  when: ruby_install_installed.stat.exists == False
+
+- name: create /opt/rubies directory
+  file: path=/opt/rubies state=directory mode=0755
+
+

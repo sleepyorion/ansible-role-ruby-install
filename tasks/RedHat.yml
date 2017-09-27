@@ -1,0 +1,16 @@
+- name: install prerequisite for ruby-install (build mode)
+  yum: pkg={{item}} state=present
+  with_items:
+    - gcc
+    - automake 
+    - bison
+    - zlib-devel
+    - libyaml-devel
+    - openssl-devel
+    - gdbm-devel
+    - readline-devel
+    - libffi-devel
+    - cpp
+    - libgcc
+    - libgomp
+  when: ruby_install_mode == "build"

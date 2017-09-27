@@ -1,0 +1,3 @@
+- include: ruby_version.yml
+    install_version="{{ item }}"
+  with_items: "{{ rubies }}"
