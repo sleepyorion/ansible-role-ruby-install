@@ -1,8 +1,8 @@
 ruby_install_version: 0.6.1
 # Support two modes: 
 # 1. build - retrieve ruby from src and build binary
-# 2. package - install ruby from binary pre-compiled
-ruby_install_mode: "build"
+# 2. install - install ruby from binary pre-compiled
+ruby_install_mode: "install"
 binary_path: "{{ role_path }}/files"
 url_prefix: "https://github.com/postmodern/chruby/archive/"
 ruby_default: 2.0.0-p648

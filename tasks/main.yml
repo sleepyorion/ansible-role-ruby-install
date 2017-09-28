@@ -22,7 +22,7 @@
   become: yes
 
 - name: copy ruby.sudo from local to remote
-  copy: src=ruby.sudo dest=/etc/sudoers.d/ruby
+  copy: src=ruby.sudo dest=/etc/sudoers.d/ruby mode=0440
   when: ruby_sudo.stat.exists == False
   become: yes
 
