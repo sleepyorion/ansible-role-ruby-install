@@ -4,6 +4,7 @@ ruby_install_version: 0.6.1
 # 2. install - install ruby from binary pre-compiled
 ruby_install_mode: "install"
 binary_path: "{{ role_path }}/files"
+ruby_prefix: "/opt/rubies"
 url_prefix: "https://github.com/postmodern/chruby/archive/"
 ruby_default: 2.0.0-p648
 rubies:
