@@ -30,8 +30,8 @@
     msg: "No binary file {{ ruby_archive_name }} can be found locally or remotely.  Please verify that {{ ruby_archive_name }} exists!"
   when: (ruby_version_installed.stat.exists == False) and (ruby_archive_remote.stat.exists == False)
 
-- name: create {{ ruby_prefix }}/{{ install_version }} directory
-  file: path="{{ ruby_prefix }}/{{ install_version }}" state=directory mode=0755
+- name: create {{ ruby_prefix }} directory
+  file: path="{{ ruby_prefix }}" state=directory
 
 # Until this bug is fix we have to use tar 
 # https://github.com/ansible/ansible/issues/29657
@@ -43,5 +43,5 @@
 
 - name: install ruby {{ install_version }} from archive
   shell: |
-    tar zxf /var/tmp/{{ ruby_archive_name }} --strip-components 1 -C {{ ruby_prefix }}/{{ install_version }}
+    tar zxf /var/tmp/{{ ruby_archive_name }} --strip-components 1 -C {{ ruby_prefix }}
   when: (ruby_version_installed.stat.exists == False) and (ruby_archive_remote.stat.exists == True)

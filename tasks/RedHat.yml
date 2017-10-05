@@ -14,3 +14,10 @@
     - libgcc
     - libgomp
   when: ruby_install_mode == "build"
+
+- name: install prerequisite for ruby (install mode)
+  yum: pkg={{item}} state=present
+  with_items:
+    - libyaml
+  when: ruby_install_mode == "install"
+  
