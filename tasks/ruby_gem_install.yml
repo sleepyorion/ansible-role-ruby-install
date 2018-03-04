@@ -1,0 +1,25 @@
+# Install gem with latest version if version
+# is not specify
+- name: install gem without version restriction
+  gem:
+    name: "{{ gem.name }}"
+    executable: "{{ ruby_bin_path }}gem"
+    user_install: no 
+    state: present
+  with_items: "{{ gems }}"
+  loop_control:
+    loop_var: gem
+  when: gem.version is not defined
+
+# Install gem with specified version
+- name: install gem with version restriction
+  gem:
+    name: "{{ gem.name }}"
+    executable: "{{ ruby_bin_path }}gem"
+    version: "{{ gem.version }}"
+    user_install: no
+    state: present
+  with_items: "{{ gems }}"
+  loop_control:
+    loop_var: gem
+  when: gem.version is defined
