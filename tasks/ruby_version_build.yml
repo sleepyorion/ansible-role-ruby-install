@@ -3,6 +3,7 @@
   set_fact:
     ruby_version_name: ruby-{{ install_version }}
     ruby_archive_name: ruby-{{ install_version }}-{{ ansible_os_family|lower }}-{{ ansible_architecture }}.tar.gz
+    ruby_bin_path: "{{ ruby_prefix }}/{{ install_version }}/bin/"
     ruby_install_path: "{{ ruby_prefix }}/{{ install_version }}/bin/ruby"
 
 - name: check if ruby is already installed
@@ -17,12 +18,16 @@
   stat: path="{{ ruby_install_path }}"
   register: ruby_version_installed
 
+- name: check if ruby archive existed
+  stat: path="/var/tmp/ruby-{{ install_version }}-{{ ansible_os_family|lower }}-{{ ansible_architecture }}.tar.gz"
+  register: ruby_archive_existed
+
 - name: archive {{ install_version }} version
   archive:
     path: "{{ ruby_prefix }}/{{ install_version }}"
     dest: /var/tmp/ruby-{{ install_version }}-{{ ansible_os_family|lower }}-{{ ansible_architecture }}.tar.gz
   register: archive_created
-  when: (ruby_version_installed.stat.exists == True)
+  when: (ruby_version_installed.stat.exists == True) and (ruby_archive_existed.stat.exists == False)
 
 - name: check if ruby binary is available on remote system
   stat: path="/var/tmp/{{ ruby_archive_name }}"
@@ -34,3 +39,5 @@
     dest: "{{ binary_path }}/{{ ruby_archive_name }}"
     flat: yes
   when: (ruby_archive_remote.stat.exists == True)
+
+- include: "ruby_gem_install.yml"

@@ -3,6 +3,7 @@
   set_fact:
     ruby_version_name: ruby-{{ install_version }}
     ruby_archive_name: ruby-{{ install_version }}-{{ ansible_os_family|lower }}-{{ ansible_architecture }}.tar.gz
+    ruby_bin_path: "{{ ruby_prefix }}/{{ install_version }}/bin/"
     ruby_install_path: "{{ ruby_prefix }}/{{ install_version }}/bin/ruby"
 
 - name: check to see if local file is available
