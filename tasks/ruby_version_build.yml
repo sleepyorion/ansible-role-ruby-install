@@ -2,7 +2,7 @@
 - name: set fact for ruby version install
   set_fact:
     ruby_version_name: ruby-{{ install_version }}
-    ruby_archive_name: ruby-{{ install_version }}-{{ ansible_os_family|lower }}-{{ ansible_architecture }}.tar.gz
+    ruby_archive_name: ruby-{{ install_version }}-{{ ansible_os_family|lower }}-{{ ansible_distribution_version }}-{{ ansible_architecture }}.tar.gz
     ruby_bin_path: "{{ ruby_prefix }}/{{ install_version }}/bin/"
     ruby_install_path: "{{ ruby_prefix }}/{{ install_version }}/bin/ruby"
 
@@ -11,21 +11,22 @@
   register: ruby_version_installed
 
 - name: install ruby {{ install_version }} from upstream
-  command: /usr/local/bin/ruby-install ruby {{ install_version }} -- --disable-install-rdoc --enable-load-relative --prefix={{ ruby_prefix }}/{{ install_version }}
+  command: /usr/local/bin/ruby-install {{ ruby_install_url_arg }} -- --disable-install-rdoc --enable-load-relative --prefix={{ ruby_prefix }}/{{ install_version }}
   when: (ruby_version_installed.stat.exists == False)
+  become: yes
 
 - name: check if ruby is already installed # retry
   stat: path="{{ ruby_install_path }}"
   register: ruby_version_installed
 
 - name: check if ruby archive existed
-  stat: path="/var/tmp/ruby-{{ install_version }}-{{ ansible_os_family|lower }}-{{ ansible_architecture }}.tar.gz"
+  stat: path="/var/tmp/{{ ruby_archive_name }}"
   register: ruby_archive_existed
 
 - name: archive {{ install_version }} version
   archive:
     path: "{{ ruby_prefix }}/{{ install_version }}"
-    dest: /var/tmp/ruby-{{ install_version }}-{{ ansible_os_family|lower }}-{{ ansible_architecture }}.tar.gz
+    dest: /var/tmp/{{ ruby_archive_name }}
   register: archive_created
   when: (ruby_version_installed.stat.exists == True) and (ruby_archive_existed.stat.exists == False)
 

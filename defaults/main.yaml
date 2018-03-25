@@ -7,5 +7,7 @@ binary_path: "{{ role_path }}/files"
 ruby_prefix: "/opt/rubies"
 url_prefix: "https://github.com/postmodern/ruby-install/archive/"
 ruby_default: 2.0.0-p648
+ruby_install_url_arg: "-u https://cache.ruby-lang.org/pub/ruby/2.0/ruby-2.0.0-p648.tar.bz2 ruby 2.0.0-p648"
 rubies:
-  - 2.0.0-p648
+  - 2.0.0-p648:
+    url_opt: "-u https://cache.ruby-lang.org/pub/ruby/2.0/ruby-2.0.0-p648.tar.bz2 ruby 2.0.0-p648"
