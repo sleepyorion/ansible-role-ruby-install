@@ -34,11 +34,16 @@
   stat: path="/var/tmp/{{ ruby_archive_name }}"
   register: ruby_archive_remote
 
+- name: check if ruby binary is available on local system
+  local_action: stat path={{ binary_path }}/{{ ruby_archive_name }}
+  register: ruby_archive_local
+  become: no
+
 - name: copy archive from remote to local
   fetch:
     src: /var/tmp/{{ ruby_archive_name }}
     dest: "{{ binary_path }}/{{ ruby_archive_name }}"
     flat: yes
-  when: (ruby_archive_remote.stat.exists == True)
+  when: ruby_archive_remote.stat.exists and not ruby_archive_local.stat.exists
 
 - include: "ruby_gem_install.yml"
