@@ -1,5 +1,7 @@
 
 - include_tasks: ruby_version_{{ ruby_install_mode }}.yml
-    install_version="{{ item.keys()[0] }}"
-    ruby_install_url_arg={{ item.url_opt }}
+    install_version="{{ ruby['version'] if ruby['version'] is defined else ruby  }}"
+    ruby_install_url_arg={{ ruby['url_opt'] if ruby['url_opt'] is defined else '' }}
   with_items: "{{ rubies }}"
+  loop_control:
+    loop_var: ruby
